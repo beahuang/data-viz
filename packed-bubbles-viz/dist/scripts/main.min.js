@@ -144,7 +144,8 @@ var Station = function(date, temperature) {
 	}
 	function showText(instance){
 		fill(0,0,100);
-		text(instance.date, instance.pos.x - 15, instance.pos.y);
+		text(instance.date, instance.pos.x - 15, instance.pos.y-5);
+		text(instance.temperature + " degrees", instance.pos.x - 30, instance.pos.y+10);
 	}
 	this.draw = function() {
 		noStroke();
