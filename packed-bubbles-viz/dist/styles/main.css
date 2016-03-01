@@ -328,7 +328,19 @@ section {
     margin-top: 0;
     margin-bottom: 0.5px; }
   section ul {
-    padding: 0 0 0 10px; }
+    padding: 0 0 0 10px;
+    margin-bottom: 0; }
   section p {
     font-size: 12px;
     margin: 0; }
+
+ul .blue {
+  color: blue; }
+ul .light-blue {
+  color: cyan; }
+ul .pink {
+  color: #f79494; }
+ul .orange {
+  color: #ff8000; }
+ul .red {
+  color: red; }

@@ -25,9 +25,28 @@ section {
   }
   ul {
     padding: 0 0 0 10px;
+    margin-bottom: 0;
   }
   p {
     font-size: 12px;
     margin: 0;
+  }
+}
+
+ul {
+  .blue {
+    color: hsb(240,100,100);
+  }
+  .light-blue {
+    color: hsb(180,100,100);
+  }
+  .pink {
+    color: hsb(0,40,97);
+  }
+  .orange {
+    color: hsb(30,100,100);
+  }
+  .red {
+    color: hsb(0,100,100);
   }
 }
