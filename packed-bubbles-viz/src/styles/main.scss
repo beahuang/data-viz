@@ -1,0 +1,33 @@
+@import 'base/variables';
+
+@import 'base/normalize';
+@import 'base/global';
+
+// Import Components
+// @import 'components/header';
+
+// Import Layouts
+// @import 'layouts/home';
+
+// Import Plugins
+// @import 'plugins/plugin';
+
+section {
+  position: absolute;
+  background: rgba(255,255,255, 0.8);
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 20px;
+  h4 {
+    margin-top: 0;
+    margin-bottom: 0.5px;
+  }
+  ul {
+    padding: 0 0 0 10px;
+  }
+  p {
+    font-size: 12px;
+    margin: 0;
+  }
+}
