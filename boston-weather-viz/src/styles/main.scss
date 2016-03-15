@@ -1,7 +1,12 @@
 @import 'base/mixins';
-
 @import 'base/normalize';
-@import 'base/global';
+
+
+$blue = hsb(240,100,100);
+$light-blue = hsb(180,100,100);
+$pink = hsb(0,40,97);
+$orange = hsb(30,100,100);
+$red = hsb(0,100,100);
 
 section {
   position: absolute;
@@ -21,23 +26,5 @@ section {
   p {
     font-size: 12px;
     margin: 0;
-  }
-}
-
-ul {
-  .blue {
-    color: hsb(240,100,100);
-  }
-  .light-blue {
-    color: hsb(180,100,100);
-  }
-  .pink {
-    color: hsb(0,40,97);
-  }
-  .orange {
-    color: hsb(30,100,100);
-  }
-  .red {
-    color: hsb(0,100,100);
   }
 }
