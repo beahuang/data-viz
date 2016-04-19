@@ -1,6 +1,6 @@
 var table;
 var img;
-var pDensity = 15;
+var pDensity = 7.5;
 var dayParticleSystem = [];
 var dayObject = {};
 var dayArray = [];
@@ -89,14 +89,16 @@ function setUpDay() {
  * @param {String} temperature: the Day's temperature
  */
 function drawText( date, temperature ) {
-	//TODO change the color based on weather
 	fill( 0 )
 	textAlign( CENTER );
 	textSize( 40 );
+	textFont( "Helvetica" );
 	text( "Boston's Weather Visualization", windowWidth/2, 150 );
 	textSize( 20 );
-	text( "Day: " + date, windowWidth/2, windowHeight/2 + 100);
-	text( "Temperature: " + temperature, windowWidth/2, windowHeight/2 + 140);
+	text( "Day: " + date + "/2015", windowWidth/2, windowHeight/2 + 100 );
+	text( "Temperature: " + temperature + "° Fahrenheit",
+				windowWidth/2,
+				windowHeight/2 + 140 );
 }
 
 /**
@@ -134,9 +136,8 @@ function windowResized() {
 	slider.style( 'width', img.width + "px" );
 	slider.position( windowWidth/2 - img.width/2,
 									 windowHeight/2 + img.height/2 - 50 );
- imageParticles.forEach( function( imageParticle ) {
-	 imageParticle.draw();
- } );
+	createImageParticles( windowWidth/2 - img.width/2,
+										 windowHeight/2 - img.height );
 }
 
 /**
@@ -173,8 +174,7 @@ var ImageParticle = function( x, y, radius ) {
 		saveY = y;
 
 		if ( this.x < (saveX + movement)) {
-			console.log(parseInt(this.x) + "save" + parseInt(saveX) + "move" + parseInt(movement));
-			this.x += movement;
+			this.x += random(movement);
 			this.y += random(movement);
 		}
 		else {
@@ -183,7 +183,6 @@ var ImageParticle = function( x, y, radius ) {
 		}
 	}
 
-	//TODO: Collisions
 }
 
 /**
@@ -241,10 +240,10 @@ var Day = function( date, temperature ) {
 			return 0;
 		}
 		else if (temperature < 40) {
-			return 2;
+			return 1;
 		}
 		else if (temperature < 60) {
-			return 4;
+			return 2;
 		}
 		else if (temperature < 80) {
 			return 6;
