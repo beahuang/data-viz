@@ -8,6 +8,9 @@ $pink = hsb(0,40,97);
 $orange = hsb(30,100,100);
 $red = hsb(0,100,100);
 
+canvas {
+	transform: translate(-50%,-50%);
+}
 section {
   position: absolute;
   background: rgba(255,255,255, 0.8);
