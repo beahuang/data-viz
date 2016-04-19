@@ -95,7 +95,7 @@ function changeData() {
 			setUpSf()
 			break;
 		default :
-			setup();
+			setUpBoston();
 	}
 }
 
@@ -106,7 +106,6 @@ function setUpSf() {
 	createImageParticles( imgSf , windowWidth/2 - imgSf.width/2,
 											windowHeight/2 - imgSf.height );
 	createDays( tableSf );
-	console.log( dayArray )
 	sliderElem.style( 'width', imgSf.width + "px" );
 	sliderElem.position( windowWidth/2 - imgSf.width/2,
 									 windowHeight/2 + imgSf.height/2 - 50 );
@@ -123,6 +122,19 @@ function setUpNyc() {
 	sliderElem.style( 'width', imgNyc.width + "px" );
 	sliderElem.position( windowWidth/2 - imgNyc.width/2,
 									 windowHeight/2 + imgNyc.height/2 - 70 );
+	cityString = "New York City"
+}
+
+/**
+ * Setup the canvas for Boston
+ */
+function setUpBoston() {
+	createImageParticles( imgBoston , windowWidth/2 - imgBoston.width/2,
+											windowHeight/2 - imgBoston.height );
+	createDays( tableBoston );
+	sliderElem.style( 'width', imgBoston.width + "px" );
+	sliderElem.position( windowWidth/2 - imgBoston.width/2,
+									 windowHeight/2 + imgBoston.height/2 );
 	cityString = "New York City"
 }
 
