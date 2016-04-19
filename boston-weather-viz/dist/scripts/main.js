@@ -263,27 +263,27 @@ var Day = function( date, temperature ) {
 	function getColor( temperature ) {
 		if ( temperature < 20 ) {
 			offset = 20 - temperature;
-			luminence = parseInt(50 + offset);
+			luminence = parseInt(30 + offset);
 			return color( 'hsl(217, 100%,' + luminence + '%)' );
 		}
 		else if ( temperature < 40 ) {
 			offset = 40 - temperature;
-			luminence = parseInt(50 + offset);
+			luminence = parseInt(30 + offset);
 			return color( 'hsl(201, 86%,' + luminence + '%)' );
 		}
 		else if ( temperature < 60 ) {
 			offset = 60 - temperature;
-			luminence = parseInt(50 + offset);
+			luminence = parseInt(30 + offset);
 			return color( 'hsl(46, 84%,' + luminence + '%)' );
 		}
 		else if ( temperature < 80 ) {
 			offset = 80 - temperature;
-			luminence = parseInt(50 + offset);
+			luminence = parseInt(30 + offset);
 			return color( 'hsl(21, 100%,' + luminence + '%)' );
 		}
 		else {
 			offset = 100 - temperature;
-			luminence = parseInt(50 + offset);
+			luminence = parseInt(30 + offset);
 			return color( 'hsl(0, 84%,' + luminence + '%)' );
 		}
 	}
