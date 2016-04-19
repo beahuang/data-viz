@@ -13,12 +13,15 @@ var slider;
 function preload() {
 	table = loadTable( "dist/data/weather.csv", "csv","header" );
 	img = loadImage( "dist/images/image4.png" );
+	bg = loadImage("dist/images/bg.jpg");
 }
 
 /**
  * Converts the weather data into Day Objects
+ * Adds the Day Objects to an Array and then
+ * sorts the array from past to present dates
  */
-function dataSetup() {
+function createDays() {
 	for ( var rowIndex = 0; rowIndex < table.getRowCount(); rowIndex++ ) {
 		var month = table.getString(rowIndex,"mo");
 		var day = table.getString(rowIndex,"da");
@@ -28,10 +31,11 @@ function dataSetup() {
 		dayObject[date] = temperature;
 	}
 	Object.keys( dayObject ).forEach( function( date ) {
-		var day = {};
-		day.date = date;
-		day.temperature = dayObject[ date ];
+		var day = new Day( date, dayObject[ date ] );
 		dayArray.push( day );
+	});
+	dayArray.sort( function( a, b ) {
+		return new Date( a.date ) - new Date( b.date );
 	});
 }
 
@@ -42,7 +46,7 @@ function dataSetup() {
  * @param {Number} xOffset: x offset for centering
  * @param {Number} yOffset: y offset for centering
  */
-function drawImageParticles(xOffset, yOffset) {
+function createImageParticles(xOffset, yOffset) {
 	imageParticles = [];
 	img.loadPixels();
 	for ( var y = 0, y2 = img.height; y < y2; y += pDensity ) {
@@ -53,9 +57,6 @@ function drawImageParticles(xOffset, yOffset) {
 			}
 		}
 	}
-	imageParticles.forEach( function( imageParticle ) {
-		imageParticle.draw();
-	} );
 }
 
 /**
@@ -65,7 +66,7 @@ function drawImageParticles(xOffset, yOffset) {
  * @param (Number) width: width of the ImageParticle image
  */
 function setupSlider(xOffset, yOffset, width ) {
-  slider = createSlider( 0, dayArray.length, 0 );
+  slider = createSlider( 0, dayArray.length - 1, 0 );
   slider.position( xOffset, yOffset );
   slider.style( 'width', width + "px" );
 	console.log( slider.value() );
@@ -89,11 +90,10 @@ function setUpDay() {
  */
 function drawText( date, temperature ) {
 	//TODO change the color based on weather
-	//TODO this should have the date, temperature + shit
 	fill( 0 )
 	textAlign( CENTER );
 	textSize( 40 );
-	text( "Boston's 2015 Weather Visualization", windowWidth/2, 150 );
+	text( "Boston's Weather Visualization", windowWidth/2, 150 );
 	textSize( 20 );
 	text( "Day: " + date, windowWidth/2, windowHeight/2 + 100);
 	text( "Temperature: " + temperature, windowWidth/2, windowHeight/2 + 140);
@@ -105,12 +105,11 @@ function drawText( date, temperature ) {
 function setup() {
 	var canvas = createCanvas( windowWidth, windowHeight );
 	frameRate( 30 );
-	colorMode( HSB, 360, 100, 100 );
-	dataSetup();
+	createDays();
 	setupSlider( windowWidth/2 - img.width/2,
 							 windowHeight/2 + img.height/2 - 50,
 							 img.width );
-	drawImageParticles( windowWidth/2 - img.width/2,
+	createImageParticles( windowWidth/2 - img.width/2,
 											windowHeight/2 - img.height );
 }
 
@@ -118,7 +117,13 @@ function setup() {
  * Draw
  */
 function draw() {
-	drawText( "1/1", 1 );
+	background( bg );
+	day = dayArray[ slider.value() ];
+	imageParticles.forEach( function( imageParticle ) {
+		imageParticle.draw();
+	} );
+	day.update();
+	drawText( day.date, parseInt( day.temperature ) );
 }
 
 /**
@@ -129,8 +134,9 @@ function windowResized() {
 	slider.style( 'width', img.width + "px" );
 	slider.position( windowWidth/2 - img.width/2,
 									 windowHeight/2 + img.height/2 - 50 );
-	drawImageParticles( windowWidth/2 - img.width/2,
-											windowHeight/2 - img.height );
+ imageParticles.forEach( function( imageParticle ) {
+	 imageParticle.draw();
+ } );
 }
 
 /**
@@ -142,15 +148,42 @@ function windowResized() {
 var ImageParticle = function( x, y, radius ) {
 	this.x = x;
 	this.y = y;
+	this.color = color( 'rgb(0, 0, 0)' );
 
 	/**
 	 * Draws an ImageParticle
 	 */
 	this.draw = function() {
 		noStroke();
-		ellipse( x, y, radius, radius );
-		fill(0);
+		fill( this.color );
+		ellipse( this.x, this.y, radius, radius );
+		this.changeMovement();
 	}
+
+	/**
+	 * Changes the color of the particle
+	 */
+	this.changeColor = function( color ) {
+		this.color = color;
+	}
+
+	this.changeMovement = function( movement ) {
+		//TODO: change movement based off of temperature
+		saveX = x;
+		saveY = y;
+
+		if ( this.x < (saveX + movement)) {
+			console.log(parseInt(this.x) + "save" + parseInt(saveX) + "move" + parseInt(movement));
+			this.x += movement;
+			this.y += random(movement);
+		}
+		else {
+			this.x = saveX;
+			this.y = saveY;
+		}
+	}
+
+	//TODO: Collisions
 }
 
 /**
@@ -164,16 +197,60 @@ var Day = function( date, temperature ) {
 	this.imageParticles = imageParticles
 
 	/**
-	 * Changes the date
-	 */
-	this.draw = function() {
-		//TODO: This should change the date of the page
-	}
-
-	/**
 	 * Updates the ImageParticles based off of the temperature
 	 */
 	this.update = function() {
-		//TODO: This should modify the particle system
+		var color = getColor( this.temperature );
+		var movement = changeMovement( this.temperature );
+		imageParticles.forEach( function( imageParticle ) {
+			imageParticle.changeColor( color );
+			imageParticle.changeMovement( movement );
+		} );
+	}
+
+	/**
+	 * Change the image particle color based off of temperature
+	 * @param: {Number}: The temperature of the day
+	 * @return {Color}: The color that the image particle should be
+	 */
+	function getColor( temperature ) {
+		if (temperature < 20) {
+			return color( 'rgb(0, 94, 255)' );
+		}
+		else if (temperature < 40) {
+			return color( 'rgb(113, 197, 245)' );
+		}
+		else if (temperature < 60) {
+			return color( 'rgb(232, 185, 19) ');
+		}
+		else if (temperature < 80) {
+			return color( 'rgb(255, 92, 0)' );
+		}
+		else {
+			return color( 'rgb(236, 26, 26)' );
+		}
+	}
+
+	/**
+	 * Change the image particle position based off of temperature
+	 * @param: {Number}: The temperature of the day
+	 * @return {Number}: The amout the particle should move
+	 */
+	function changeMovement( temperature ) {
+		if (temperature < 20) {
+			return 0;
+		}
+		else if (temperature < 40) {
+			return 2;
+		}
+		else if (temperature < 60) {
+			return 4;
+		}
+		else if (temperature < 80) {
+			return 6;
+		}
+		else {
+			return 8;
+		}
 	}
 }
