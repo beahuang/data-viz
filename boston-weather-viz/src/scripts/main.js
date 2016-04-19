@@ -134,8 +134,8 @@ function setUpBoston() {
 	createDays( tableBoston );
 	sliderElem.style( 'width', imgBoston.width + "px" );
 	sliderElem.position( windowWidth/2 - imgBoston.width/2,
-									 windowHeight/2 + imgBoston.height/2 );
-	cityString = "New York City"
+									 windowHeight/2 + imgBoston.height/2 - 50 );
+	cityString = "Boston"
 }
 
 /**
