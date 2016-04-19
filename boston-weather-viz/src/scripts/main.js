@@ -1,18 +1,22 @@
-var table;
-var img;
+var imgBoston, imgSf, imgNyc;
 var pDensity = 7.5;
 var dayParticleSystem = [];
 var dayObject = {};
 var dayArray = [];
 var imageParticles;
-var slider;
+var sliderElem, selectElem;
+var cityString;
 
 /**
  * Preloads the weather data and the image being rendered into particles
  */
 function preload() {
-	table = loadTable( "dist/data/weather.csv", "csv","header" );
-	img = loadImage( "dist/images/image4.png" );
+	tableBoston = loadTable( "dist/data/boston.csv", "csv","header" );
+	tableSf = loadTable( "dist/data/sf.csv", "csv","header" );
+	tableNyc = loadTable( "dist/data/nyc.csv", "csv","header" );
+	imgBoston = loadImage( "dist/images/boston.png" );
+	imgSf = loadImage( "dist/images/sf.png" );
+	imgNyc = loadImage( "dist/images/nyc.png" );
 	bg = loadImage("dist/images/bg.jpg");
 }
 
@@ -20,8 +24,10 @@ function preload() {
  * Converts the weather data into Day Objects
  * Adds the Day Objects to an Array and then
  * sorts the array from past to present dates
+ * @param {Table} table: The data it should be creating Days from
  */
-function createDays() {
+function createDays( table ) {
+
 	for ( var rowIndex = 0; rowIndex < table.getRowCount(); rowIndex++ ) {
 		var month = table.getString(rowIndex,"mo");
 		var day = table.getString(rowIndex,"da");
@@ -30,6 +36,8 @@ function createDays() {
 		temperature = parseInt(temperature);
 		dayObject[date] = temperature;
 	}
+
+	dayArray = [];
 	Object.keys( dayObject ).forEach( function( date ) {
 		var day = new Day( date, dayObject[ date ] );
 		dayArray.push( day );
@@ -37,6 +45,7 @@ function createDays() {
 	dayArray.sort( function( a, b ) {
 		return new Date( a.date ) - new Date( b.date );
 	});
+
 }
 
 /**
@@ -46,7 +55,7 @@ function createDays() {
  * @param {Number} xOffset: x offset for centering
  * @param {Number} yOffset: y offset for centering
  */
-function createImageParticles(xOffset, yOffset) {
+function createImageParticles(img, xOffset, yOffset) {
 	imageParticles = [];
 	img.loadPixels();
 	for ( var y = 0, y2 = img.height; y < y2; y += pDensity ) {
@@ -57,6 +66,7 @@ function createImageParticles(xOffset, yOffset) {
 			}
 		}
 	}
+	return imageParticles
 }
 
 /**
@@ -66,34 +76,68 @@ function createImageParticles(xOffset, yOffset) {
  * @param (Number) width: width of the ImageParticle image
  */
 function setupSlider(xOffset, yOffset, width ) {
-  slider = createSlider( 0, dayArray.length - 1, 0 );
-  slider.position( xOffset, yOffset );
-  slider.style( 'width', width + "px" );
-	console.log( slider.value() );
+  sliderElem = createSlider( 0, dayArray.length - 1, 0 );
+  sliderElem.position( xOffset, yOffset );
+  sliderElem.style( 'width', width + "px" );
 }
 
 /**
- * Changes the Day that is being shown based of the slider value
+ * Change the Data based off of the Select
  */
-function setUpDay() {
-	//TODO: figure out a way to change the day based on the slider
-	for ( day in dayArray ) {
-		var date = dayArray[ day ].date;
-		var temperature = dayArray[ day ].temperature;
+function changeData() {
+	select = document.getElementsByTagName("select")[0];
+  var city = select.options[select.selectedIndex].value;
+	switch ( city ) {
+		case 'nyc':
+			setUpNyc()
+			break;
+		case 'sf':
+			setUpSf()
+			break;
+		default :
+			setup();
 	}
 }
 
 /**
+ * Setup the canvas for San Francisco
+ */
+function setUpSf() {
+	createImageParticles( imgSf , windowWidth/2 - imgSf.width/2,
+											windowHeight/2 - imgSf.height );
+	createDays( tableSf );
+	console.log( dayArray )
+	sliderElem.style( 'width', imgSf.width + "px" );
+	sliderElem.position( windowWidth/2 - imgSf.width/2,
+									 windowHeight/2 + imgSf.height/2 - 50 );
+	cityString = "San Francisco"
+}
+
+/**
+ * Setup the canvas for NYC
+ */
+function setUpNyc() {
+	createImageParticles( imgNyc , windowWidth/2 - imgNyc.width/2,
+											windowHeight/2 - imgNyc.height + 50 );
+	createDays( tableNyc );
+	sliderElem.style( 'width', imgNyc.width + "px" );
+	sliderElem.position( windowWidth/2 - imgNyc.width/2,
+									 windowHeight/2 + imgNyc.height/2 - 70 );
+	cityString = "New York City"
+}
+
+/**
  * Draw the text for title, day and temperature
+ * @param {String} city: the city whose dataset we're looking at
  * @param {String} date: the Day's date
  * @param {String} temperature: the Day's temperature
  */
-function drawText( date, temperature ) {
+function drawText( city, date, temperature ) {
 	fill( 0 )
 	textAlign( CENTER );
 	textSize( 40 );
 	textFont( "Helvetica" );
-	text( "Boston's Weather Visualization", windowWidth/2, 150 );
+	text( city + "'s Weather Visualization", windowWidth/2, 150 );
 	textSize( 20 );
 	text( "Day: " + date + "/2015", windowWidth/2, windowHeight/2 + 100 );
 	text( "Temperature: " + temperature + "° Fahrenheit",
@@ -107,12 +151,13 @@ function drawText( date, temperature ) {
 function setup() {
 	var canvas = createCanvas( windowWidth, windowHeight );
 	frameRate( 30 );
-	createDays();
-	setupSlider( windowWidth/2 - img.width/2,
-							 windowHeight/2 + img.height/2 - 50,
-							 img.width );
-	createImageParticles( windowWidth/2 - img.width/2,
-											windowHeight/2 - img.height );
+	createDays( tableBoston );
+	setupSlider( windowWidth/2 - imgBoston.width/2,
+							 windowHeight/2 + imgBoston.height/2 - 50,
+							 imgBoston.width );
+	cityString = "Boston"
+	createImageParticles( imgBoston ,windowWidth/2 - imgBoston.width/2,
+											windowHeight/2 - imgBoston.height );
 }
 
 /**
@@ -120,12 +165,12 @@ function setup() {
  */
 function draw() {
 	background( bg );
-	day = dayArray[ slider.value() ];
+	day = dayArray[ sliderElem.value() ];
 	imageParticles.forEach( function( imageParticle ) {
 		imageParticle.draw();
 	} );
 	day.update();
-	drawText( day.date, parseInt( day.temperature ) );
+	drawText( cityString, day.date, parseInt( day.temperature ) );
 }
 
 /**
@@ -133,11 +178,11 @@ function draw() {
  */
 function windowResized() {
 	resizeCanvas( windowWidth, windowHeight );
-	slider.style( 'width', img.width + "px" );
-	slider.position( windowWidth/2 - img.width/2,
-									 windowHeight/2 + img.height/2 - 50 );
-	createImageParticles( windowWidth/2 - img.width/2,
-										 windowHeight/2 - img.height );
+	sliderElem.style( 'width', imgBoston.width + "px" );
+	sliderElem.position( windowWidth/2 - imgBoston.width/2,
+									 windowHeight/2 + imgBoston.height/2 - 50 );
+	createImageParticles( imgBoston, windowWidth/2 - imgBoston.width/2,
+										 windowHeight/2 - imgBoston.height );
 }
 
 /**
@@ -163,17 +208,21 @@ var ImageParticle = function( x, y, radius ) {
 
 	/**
 	 * Changes the color of the particle
+	 * @param: {Color} color : the particle should change to
 	 */
 	this.changeColor = function( color ) {
 		this.color = color;
 	}
 
+	/**
+	 * Changes the movement of the particles
+	 * @param: {Number} movement: range of pixels it should randomly moving by
+	 */
 	this.changeMovement = function( movement ) {
-		//TODO: change movement based off of temperature
 		saveX = x;
 		saveY = y;
 
-		if ( this.x < (saveX + movement)) {
+		if ( this.x < ( saveX + movement ) ) {
 			this.x += random(movement);
 			this.y += random(movement);
 		}
@@ -182,7 +231,6 @@ var ImageParticle = function( x, y, radius ) {
 			this.y = saveY;
 		}
 	}
-
 }
 
 /**
@@ -213,39 +261,49 @@ var Day = function( date, temperature ) {
 	 * @return {Color}: The color that the image particle should be
 	 */
 	function getColor( temperature ) {
-		if (temperature < 20) {
-			return color( 'rgb(0, 94, 255)' );
+		if ( temperature < 20 ) {
+			offset = 20 - temperature;
+			luminence = parseInt(50 + offset);
+			return color( 'hsl(217, 100%,' + luminence + '%)' );
 		}
-		else if (temperature < 40) {
-			return color( 'rgb(113, 197, 245)' );
+		else if ( temperature < 40 ) {
+			offset = 40 - temperature;
+			luminence = parseInt(50 + offset);
+			return color( 'hsl(201, 86%,' + luminence + '%)' );
 		}
-		else if (temperature < 60) {
-			return color( 'rgb(232, 185, 19) ');
+		else if ( temperature < 60 ) {
+			offset = 60 - temperature;
+			luminence = parseInt(50 + offset);
+			return color( 'hsl(46, 84%,' + luminence + '%)' );
 		}
-		else if (temperature < 80) {
-			return color( 'rgb(255, 92, 0)' );
+		else if ( temperature < 80 ) {
+			offset = 80 - temperature;
+			luminence = parseInt(50 + offset);
+			return color( 'hsl(21, 100%,' + luminence + '%)' );
 		}
 		else {
-			return color( 'rgb(236, 26, 26)' );
+			offset = 100 - temperature;
+			luminence = parseInt(50 + offset);
+			return color( 'hsl(0, 84%,' + luminence + '%)' );
 		}
 	}
 
 	/**
 	 * Change the image particle position based off of temperature
-	 * @param: {Number}: The temperature of the day
+	 * @param: {Number} temperature: The temperature of the day
 	 * @return {Number}: The amout the particle should move
 	 */
 	function changeMovement( temperature ) {
-		if (temperature < 20) {
+		if ( temperature < 20 ) {
 			return 0;
 		}
-		else if (temperature < 40) {
+		else if ( temperature < 40 ) {
 			return 1;
 		}
-		else if (temperature < 60) {
+		else if ( temperature < 60 ) {
 			return 2;
 		}
-		else if (temperature < 80) {
+		else if ( temperature < 80 ) {
 			return 6;
 		}
 		else {

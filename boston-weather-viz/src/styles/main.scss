@@ -1,33 +1,8 @@
 @import 'base/mixins';
 @import 'base/normalize';
 
-
-$blue = hsb(240,100,100);
-$light-blue = hsb(180,100,100);
-$pink = hsb(0,40,97);
-$orange = hsb(30,100,100);
-$red = hsb(0,100,100);
-
-canvas {
-	transform: translate(-50%,-50%);
-}
-section {
+select {
   position: absolute;
-  background: rgba(255,255,255, 0.8);
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  padding: 20px;
-  h4 {
-    margin-top: 0;
-    margin-bottom: 0.5px;
-  }
-  ul {
-    padding: 0 0 0 10px;
-    margin-bottom: 0;
-  }
-  p {
-    font-size: 12px;
-    margin: 0;
-  }
+  left: 45%;
+  bottom: 25%;
 }

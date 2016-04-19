@@ -317,30 +317,7 @@ table {
 td, th {
   padding: 0; }
 
-section {
+select {
   position: absolute;
-  background: rgba(255, 255, 255, 0.8);
-  right: 0;
-  bottom: 0;
-  z-index: 1;
-  padding: 20px; }
-  section h4 {
-    margin-top: 0;
-    margin-bottom: 0.5px; }
-  section ul {
-    padding: 0 0 0 10px;
-    margin-bottom: 0; }
-  section p {
-    font-size: 12px;
-    margin: 0; }
-
-ul .blue {
-  color: blue; }
-ul .light-blue {
-  color: cyan; }
-ul .pink {
-  color: #f79494; }
-ul .orange {
-  color: #ff8000; }
-ul .red {
-  color: red; }
+  left: 45%;
+  bottom: 25%; }
