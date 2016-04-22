@@ -355,7 +355,7 @@ body {
     bottom: 0; }
 
 section {
-  padding: 40px;
+  padding: 40px 0;
   width: 100%;
   text-align: center;
   color: white; }
