@@ -6,16 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title></title>
   <meta name="description" content="">
-  <link rel="stylesheet" href="dist/styles/main.css">
+
+  <!-- libraries -->
   <script src="dist/scripts/libraries/p5.js"></script>
   <script src="dist/scripts/libraries/p5.dom.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+  <script src="dist/scripts/libraries/jquery-ui.min.js"></script>
+  <script src="dist/scripts/libraries/jquery-ui-slider-pips.min.js"></script>
+
+  <!-- stylesheets -->
+  <link rel="stylesheet" href="dist/styles/main.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.4/themes/flick/jquery-ui.css">
+  <link rel="stylesheet" href="http://simeydotme.github.io/jQuery-ui-Slider-Pips/dist/css/jquery-ui-slider-pips.min.css" />
 </head>
 <body>
-  <select onChange="changeData()">
-    <option value="boston">Boston</option>
-    <option value="nyc">New York City</option>
-    <option value="sf">San Francisco </option>
-  </select>
+  <div class="select-wrapper">
+    <select onChange="changeData()">
+      <option value="boston">  Boston</option>
+      <option value="nyc">New York City</option>
+      <option value="sf">San Francisco </option>
+    </select>
+  </div>
+  <div id="flat-slider" class="slider"></div>
+  <section>
+    <h1>2015 Weather Visualization</h1>
+    <p>
+      This is a visualization of the NOAA weather data hosted by Google's
+      Big Query.
+      <br/>
+      Click on the city name to change where you're looking at.
+      <br/>
+      The warmer the temperature, the faster the particles move!
+    </p>
+  </section>
   <script src="dist/scripts/main.js"></script>
 </body>
 </html>

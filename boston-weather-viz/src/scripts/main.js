@@ -4,7 +4,6 @@ var dayParticleSystem = [];
 var dayObject = {};
 var dayArray = [];
 var imageParticles;
-var sliderElem, selectElem;
 var cityString;
 
 /**
@@ -76,10 +75,27 @@ function createImageParticles(img, xOffset, yOffset) {
  * @param (Number) width: width of the ImageParticle image
  */
 function setupSlider(xOffset, yOffset, width ) {
-  sliderElem = createSlider( 0, dayArray.length - 1, 0 );
-  sliderElem.position( xOffset, yOffset );
-  sliderElem.style( 'width', width + "px" );
+	$.extend( $.ui.slider.prototype.options, {
+	    animate: 300
+	});
+
+	$("#flat-slider")
+			.slider({
+					max: dayArray.length - 1,
+					min: 0,
+					range: "min",
+					value: 30,
+					orientation: "vertical"
+	})
+	.slider("pips", {
+			first: "label",
+			last: "label",
+			step: 20
+	});
+
 }
+
+
 
 /**
  * Change the Data based off of the Select
@@ -106,9 +122,6 @@ function setUpSf() {
 	createImageParticles( imgSf , windowWidth/2 - imgSf.width/2,
 											windowHeight/2 - imgSf.height );
 	createDays( tableSf );
-	sliderElem.style( 'width', imgSf.width + "px" );
-	sliderElem.position( windowWidth/2 - imgSf.width/2,
-									 windowHeight/2 + imgSf.height/2 - 50 );
 	cityString = "San Francisco"
 }
 
@@ -119,9 +132,6 @@ function setUpNyc() {
 	createImageParticles( imgNyc , windowWidth/2 - imgNyc.width/2,
 											windowHeight/2 - imgNyc.height + 50 );
 	createDays( tableNyc );
-	sliderElem.style( 'width', imgNyc.width + "px" );
-	sliderElem.position( windowWidth/2 - imgNyc.width/2,
-									 windowHeight/2 + imgNyc.height/2 - 70 );
 	cityString = "New York City"
 }
 
@@ -130,11 +140,8 @@ function setUpNyc() {
  */
 function setUpBoston() {
 	createImageParticles( imgBoston , windowWidth/2 - imgBoston.width/2,
-											windowHeight/2 - imgBoston.height );
+											windowHeight/2 - imgBoston.height + 40 );
 	createDays( tableBoston );
-	sliderElem.style( 'width', imgBoston.width + "px" );
-	sliderElem.position( windowWidth/2 - imgBoston.width/2,
-									 windowHeight/2 + imgBoston.height/2 - 50 );
 	cityString = "Boston"
 }
 
@@ -163,21 +170,19 @@ function drawText( city, date, temperature ) {
 function setup() {
 	var canvas = createCanvas( windowWidth, windowHeight );
 	frameRate( 30 );
-	createDays( tableBoston );
+	setUpBoston();
 	setupSlider( windowWidth/2 - imgBoston.width/2,
-							 windowHeight/2 + imgBoston.height/2 - 50,
+							 windowHeight/2 + imgBoston.height/2 - 70,
 							 imgBoston.width );
-	cityString = "Boston"
-	createImageParticles( imgBoston ,windowWidth/2 - imgBoston.width/2,
-											windowHeight/2 - imgBoston.height );
 }
 
 /**
  * Draw
  */
 function draw() {
-	background( bg );
-	day = dayArray[ sliderElem.value() ];
+	background( 'hex(434d5a)' );
+	dayIndex = $('#flat-slider').slider("option", "value");
+	day = dayArray[ dayIndex ];
 	imageParticles.forEach( function( imageParticle ) {
 		imageParticle.draw();
 	} );
@@ -190,11 +195,7 @@ function draw() {
  */
 function windowResized() {
 	resizeCanvas( windowWidth, windowHeight );
-	sliderElem.style( 'width', imgBoston.width + "px" );
-	sliderElem.position( windowWidth/2 - imgBoston.width/2,
-									 windowHeight/2 + imgBoston.height/2 - 50 );
-	createImageParticles( imgBoston, windowWidth/2 - imgBoston.width/2,
-										 windowHeight/2 - imgBoston.height );
+	setUpBoston();
 }
 
 /**
@@ -273,13 +274,13 @@ var Day = function( date, temperature ) {
 	 * @return {Color}: The color that the image particle should be
 	 */
 	function getColor( temperature ) {
-		if ( temperature < 20 ) {
-			offset = 20 - temperature;
+		if ( temperature < 32 ) {
+			offset = 32 - temperature;
 			luminence = parseInt(30 + offset);
 			return color( 'hsl(217, 100%,' + luminence + '%)' );
 		}
-		else if ( temperature < 40 ) {
-			offset = 40 - temperature;
+		else if ( temperature < 45 ) {
+			offset = 45 - temperature;
 			luminence = parseInt(30 + offset);
 			return color( 'hsl(201, 86%,' + luminence + '%)' );
 		}
@@ -288,7 +289,7 @@ var Day = function( date, temperature ) {
 			luminence = parseInt(30 + offset);
 			return color( 'hsl(46, 84%,' + luminence + '%)' );
 		}
-		else if ( temperature < 80 ) {
+		else if ( temperature < 75 ) {
 			offset = 80 - temperature;
 			luminence = parseInt(30 + offset);
 			return color( 'hsl(21, 100%,' + luminence + '%)' );
